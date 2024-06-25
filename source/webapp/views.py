@@ -21,5 +21,9 @@ def create_article(request):
 
         return HttpResponseRedirect('/')
 
-def article_detail(request, article_id):
-    pass
+def article_detail(request, *args, pk, **kwargs):
+    try:
+        article = Article.objects.get(id=pk)
+    except Article.DoesNotExist:
+        return HttpResponseRedirect('/')
+    return render(request, 'article_detail.html', context={"article": article})
