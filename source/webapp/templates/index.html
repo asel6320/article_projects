@@ -12,7 +12,7 @@
 </head>
 <body>
 
-    <a href="create/">Create article</a>
+    <a href="{% url 'create_article' %}">Create article</a>
 
     {% for article in articles %}
         <div class="card mt-3" style="width: 18rem;">
@@ -20,7 +20,7 @@
             <h5 class="card-title">{{ article.title }}</h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">{{ article.author }}</h6>
             <p class="card-text">{{ article.content }}</p>
-            <a href="article/{{ article.id }}/" class="card-link">Detail view</a>
+            <a href="{% url 'article_detail' article.pk %}" class="card-link">Detail view</a>
             <a href="#" class="card-link"></a>
           </div>
         </div>

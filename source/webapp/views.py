@@ -1,5 +1,6 @@
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponseRedirect, HttpResponseNotFound
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 
 from webapp.models import Article
 
@@ -13,17 +14,18 @@ def create_article(request):
     if request.method == 'GET':
         return render(request, 'create_article.html')
     else:
-        Article.objects.create(
+        article = Article.objects.create(
             title=request.POST.get("title"),
             content = request.POST.get("content"),
             author = request.POST.get("author")
         ) # v ideale vot zdes' doljna iiti proverka, chto priwli nujnye dannye i potom peredavat'
-
-        return HttpResponseRedirect('/')
+        #return HttpResponseRedirect(reverse("article_detail", kwargs={"pk": article.pk}))
+        return redirect("article_detail", pk=article.pk)
 
 def article_detail(request, *args, pk, **kwargs):
-    try:
-        article = Article.objects.get(id=pk)
-    except Article.DoesNotExist:
-        return HttpResponseRedirect('/')
+    article = get_object_or_404(Article, pk=pk)
+    #try:
+    #    article = Article.objects.get(id=pk)
+    #except Article.DoesNotExist:
+    #    raise Http404
     return render(request, 'article_detail.html', context={"article": article})
