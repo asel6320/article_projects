@@ -29,3 +29,27 @@ def article_detail(request, *args, pk, **kwargs):
     #except Article.DoesNotExist:
     #    raise Http404
     return render(request, 'article_detail.html', context={"article": article})
+
+def update_article(request, *args, pk, **kwargs):
+    if request.method == 'GET':
+        return render(
+            request, "update_article.html",
+            context={"article": get_object_or_404(Article, pk=pk)}
+        )
+    else:
+        article = get_object_or_404(Article, pk=pk)
+        article.title = request.POST.get("title")
+        article.content = request.POST.get("content")
+        article.author = request.POST.get("author")
+        article.save()
+        #by doing this function you will save all the cnages made to your article to the database
+        return redirect("article_detail", pk= article.pk)
+
+def delete_article(request, *args, pk, **kwargs):
+    if request.method == 'GET':
+        article = get_object_or_404(Article, pk=pk)
+        return render(request, 'delete_article.html')
+    else:
+        article = get_object_or_404(Article, pk=pk) #by this function you find the article
+        article.delete()
+        return redirect("articles")
