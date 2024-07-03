@@ -1,16 +1,23 @@
 {% csrf_token %}
-    <label>Title:</label><br/>
-    {% if errors.title %}
-        <input type="text" class="border border-daner" value="{{ article.title }}" name="title"/><br/>
-        <p class="text-danger">{{ "This field should be more than 50 symbols" }}</p>
-    {% else %}
-        <input type="text" value="{{ article.title }}" name="title"/><br/>
-    {% endif %}
-    <input type="text" value="{{ article.title }}" name="title"/><br/>
-    <label>Text:</label><br/>
-    <textarea name="content">{{ article.content }}</textarea><br/>
-    <label>Author:</label><br/>
-    <input type="text" value="{{ article.author }}" name="author"/><br/>
-    <br/>
-    <input type="submit" value="{{ button_text }}"/>
-    
+{#    <label>Title:</label><br/>#}
+{#    {% if errors.title %}#}
+{#        <input type="text" class="border border-daner" value="{{ article.title }}" name="title"/><br/>#}
+{#        <p class="text-danger">{{ "This field should be more than 50 symbols" }}</p>#}
+{#    {% else %}#}
+{#        <input type="text" value="{{ article.title }}" name="title"/><br/>#}
+{#    {% endif %}#}
+{#    <input type="text" value="{{ article.title }}" name="title"/><br/>#}
+{#    <label>Text:</label><br/>#}
+{#    <textarea name="content">{{ article.content }}</textarea><br/>#}
+{#    <label>Author:</label><br/>#}
+{#    <input type="text" value="{{ article.author }}" name="author"/><br/>#}
+{#    <br/>#}
+{#    <input type="submit" value="{{ button_text }}"/>#}
+{% for field in form %}
+    <p><label for="{{ field.id_for_label }}">{{ field.label }}</label></p>
+    {% for error in field.errors %}
+        <p class="text-danger">{{ error }}</p>
+    {% endfor %}
+    <p>{{ field }}</p>
+{% endfor %}
+<input type="submit" value="{{ button_text }}"/>
