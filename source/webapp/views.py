@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from webapp.models import Article
+from webapp.validate import article_validate
 
 
 # Create your views here.
@@ -14,13 +15,26 @@ def create_article(request):
     if request.method == 'GET':
         return render(request, 'create_article.html')
     else:
-        article = Article.objects.create(
-            title=request.POST.get("title"),
-            content = request.POST.get("content"),
-            author = request.POST.get("author")
-        ) # v ideale vot zdes' doljna iiti proverka, chto priwli nujnye dannye i potom peredavat'
-        #return HttpResponseRedirect(reverse("article_detail", kwargs={"pk": article.pk}))
-        return redirect("article_detail", pk=article.pk)
+        title = request.POST['title'],
+        content = request.POST['content'],
+        author = request.POST['author']
+
+        article = Article(
+            title=title,
+            content=content,
+            author=author
+        )
+
+        errors = article_validate(article)
+        if not errors:
+            article.save()
+            return redirect("article_detail", pk=article.pk)
+
+        return render(
+            request,
+            'create_article.html',
+            context={"errors": errors, "article": article}
+        )
 
 def article_detail(request, *args, pk, **kwargs):
     article = get_object_or_404(Article, pk=pk)
@@ -41,9 +55,17 @@ def update_article(request, *args, pk, **kwargs):
         article.title = request.POST.get("title")
         article.content = request.POST.get("content")
         article.author = request.POST.get("author")
-        article.save()
-        #by doing this function you will save all the cnages made to your article to the database
-        return redirect("article_detail", pk= article.pk)
+
+        errors = article_validate(article)
+        if not errors:
+            article.save()
+            #by doing this function you will save all the cnages made to your article to the database
+            return redirect("article_detail", pk= article.pk)
+        return render(
+            request,
+            'update_article.html',
+            context={"errors": errors, "article": article}
+        )
 
 def delete_article(request, *args, pk, **kwargs):
     if request.method == 'GET':
