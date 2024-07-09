@@ -25,6 +25,9 @@ def create_article(request):
                 content=request.POST['content'],
                 author=request.POST['author']
             )
+            tags = form.cleaned_data['tags']
+            print(tags)
+            article.tags.set(tags)
             return redirect("article_detail", pk=article.pk)
 
         return render(

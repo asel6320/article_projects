@@ -1,47 +1,101 @@
-
 [
-{
-  "model": "webapp.article",
-  "pk": 1,
-  "fields": {
-    "title": "Article_1",
-    "author": "Unknown",
-    "content": "Content_1",
-    "created_at": "2024-06-24T05:53:08.565Z",
-    "updated_at": "2024-06-24T05:53:08.565Z"
-  }
-},
 {
   "model": "webapp.article",
   "pk": 2,
   "fields": {
+    "created_at": "2024-06-24T05:54:07.125Z",
+    "updated_at": "2024-06-24T05:54:07.125Z",
     "title": "Article_2",
     "author": "Unknown",
-    "content": "Content_2wvbkjebnvkj",
-    "created_at": "2024-06-24T05:54:07.125Z",
-    "updated_at": "2024-06-24T05:54:07.125Z"
+    "content": "Content_2wvbkjebnvkj"
   }
 },
 {
   "model": "webapp.article",
   "pk": 3,
   "fields": {
+    "created_at": "2024-06-24T06:32:02.846Z",
+    "updated_at": "2024-06-24T06:32:02.848Z",
     "title": "new article",
     "author": "Unknown",
-    "content": "new content",
-    "created_at": "2024-06-24T06:32:02.846Z",
-    "updated_at": "2024-06-24T06:32:02.848Z"
+    "content": "new content"
   }
 },
 {
   "model": "webapp.article",
   "pk": 4,
   "fields": {
+    "created_at": "2024-06-24T06:58:44.577Z",
+    "updated_at": "2024-06-24T06:58:44.577Z",
     "title": "My Article",
     "author": "Asel",
-    "content": "wkefnlkernglknetlkrng",
-    "created_at": "2024-06-24T06:58:44.577Z",
-    "updated_at": "2024-06-24T06:58:44.577Z"
+    "content": "wkefnlkernglknetlkrng"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 5,
+  "fields": {
+    "created_at": "2024-06-26T04:50:09.312Z",
+    "updated_at": "2024-06-26T04:50:09.312Z",
+    "title": "Test_article",
+    "author": "Asel",
+    "content": "wmvckjew vkj ekjrv ekjr vkj erkjsv ekjr"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 6,
+  "fields": {
+    "created_at": "2024-06-26T04:54:07.933Z",
+    "updated_at": "2024-07-01T06:28:40.322Z",
+    "title": "나의 러시아 생활 이야기",
+    "author": "유동옥",
+    "content": "공부하고 클럽도 가고 친구도 사귀고 네 그렇다..."
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 7,
+  "fields": {
+    "created_at": "2024-07-01T06:54:38.565Z",
+    "updated_at": "2024-07-01T06:56:15.477Z",
+    "title": "Title_10",
+    "author": "Asel Chukhrai",
+    "content": "wrvmelkrmvk"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 8,
+  "fields": {
+    "created_at": "2024-07-01T06:55:27.276Z",
+    "updated_at": "2024-07-01T06:56:10.461Z",
+    "title": "Title_11",
+    "author": "Asel Spongebob",
+    "content": "My journey was great before I got here and made some changes and it was unbeliaveel"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 9,
+  "fields": {
+    "created_at": "2024-07-01T06:57:02.615Z",
+    "updated_at": "2024-07-03T05:56:43.004Z",
+    "title": "Changed_check",
+    "author": "Doer",
+    "content": "I wanted to check the secton therefore I am creating this article "
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 10,
+  "fields": {
+    "created_at": "2024-07-01T06:59:22.731Z",
+    "updated_at": "2024-07-03T05:55:24.698Z",
+    "title": "My name",
+    "author": "Kwakuwka",
+    "content": "e,fl;e,r;f,"
   }
 }
 ]
