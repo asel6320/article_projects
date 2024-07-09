@@ -19,4 +19,4 @@ class ArticleForm(forms.Form):
         widget=forms.Textarea(attrs={"cols":40, "rows":4, "placeholder":"Content"}),
     )
 
-    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False)
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=True)

@@ -26,7 +26,6 @@ def create_article(request):
                 author=request.POST['author']
             )
             tags = form.cleaned_data['tags']
-            print(tags)
             article.tags.set(tags)
             return redirect("article_detail", pk=article.pk)
 
@@ -51,6 +50,7 @@ def update_article(request, *args, pk, **kwargs):
             "title": article.title,
             "author": article.author,
             "content": article.content,
+            "tags": article.tags.all(),
         })
         return render(
             request, "update_article.html",
@@ -64,6 +64,8 @@ def update_article(request, *args, pk, **kwargs):
             article.content = request.POST.get("content")
             article.author = request.POST.get("author")
             article.save()
+            tags = form.cleaned_data['tags']
+            article.tags.set(tags)
             return redirect("article_detail", pk=article.pk)
         else:
             return render(
