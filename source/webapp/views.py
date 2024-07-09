@@ -1,23 +1,30 @@
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.views import View
+from django.views.generic import TemplateView
 
 from webapp.forms import ArticleForm
 from webapp.models import Article
-from webapp.validate import article_validate
 
+class ArticleListView(View):
+    def get(self, request, *args, **kwargs):
+        articles = Article.objects.order_by('-created_at')
+        return render(request, 'index.html', context={"articles": articles})
 
 # Create your views here.
-def index(request):
-    articles = Article.objects.order_by('-created_at')
-    return render(request, 'index.html', context={"articles": articles})
 
-def create_article(request):
-    if request.method == 'GET':
+class CreateArticleView(View):
+    def dispatch(self, request, *args, **kwargs):
+        print(request.POST)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
         form = ArticleForm()
-        print(form)
         return render(request, 'create_article.html', {'form': form})
-    else:
+
+    def post(self, request, *args, **kwargs):
+        print("post")
         form = ArticleForm(data=request.POST)
         if form.is_valid():
             article = Article.objects.create(
@@ -35,13 +42,25 @@ def create_article(request):
             context={"form":form}
         )
 
-def article_detail(request, *args, pk, **kwargs):
-    article = get_object_or_404(Article, pk=pk)
-    #try:
-    #    article = Article.objects.get(id=pk)
-    #except Article.DoesNotExist:
-    #    raise Http404
-    return render(request, 'article_detail.html', context={"article": article})
+class ArticleDetailView(TemplateView):
+    #template_name = "article_detail.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        self.article = get_object_or_404(Article, pk=kwargs.get('pk'))
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["article"] = self.article
+        return context
+
+    def get_template_names(self):
+        #in here you can check something with if and else
+        if self.article.tags.exists():
+            return ["article_detail.html"]
+        else:
+            return ["test_detail.html"] #according to different if and else checkings, you can return different html files
+
 
 def update_article(request, *args, pk, **kwargs):
     if request.method == "GET":
