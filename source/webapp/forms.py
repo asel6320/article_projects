@@ -1,22 +1,24 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.forms import widgets
 
-from webapp.models import Tag
+from webapp.models import Tag, Article
+
+def title_validate(title):
+    if len(title) < 5:
+        raise ValidationError("error")
 
 
-class ArticleForm(forms.Form):
-    title = forms.CharField(max_length=50, required=True, label="Name")
-    author = forms.CharField(
-        max_length=50,
-        required=False,
-        label="Author",
-        widget=widgets.Input(attrs={"placeholder": "Author"}),
-    )
-    content = forms.CharField(
-        max_length=3000,
-        required=True,
-        label="Content",
-        widget=forms.Textarea(attrs={"cols":40, "rows":4, "placeholder":"Content"}),
-    )
+class ArticleForm(forms.ModelForm):
+    title = forms.CharField(max_length=50, required=True, label="Название", validators=[title_validate])
 
-    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=True)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for v in self.visible_fields():
+            if not isinstance(v.field.widget, widgets.CheckboxSelectMultiple):
+                v.field.widget.attrs["class"] = "form-control"
+
+    class Meta:
+        model = Article
+        fields = ("title", "content", "author", "tags")
+        widgets = {"tags": widgets.CheckboxSelectMultiple()}
