@@ -2,17 +2,26 @@ from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView, FormView
+from django.views.generic import TemplateView, FormView, ListView
 
 from webapp.forms import ArticleForm
 from webapp.models import Article
 
-class ArticleListView(View):
-    def get(self, request, *args, **kwargs):
-        articles = Article.objects.order_by('-created_at')
-        return render(request, 'articles/index.html', context={"articles": articles})
+class ArticleListView(ListView):
+    #queryset = Article.objects.filter(title__contains='Article')
+    model = Article
+    template_name = "articles/index.html"
+    ordering = ['-created_at']
+    context_object_name = 'articles'
+    paginate_by = 3
 
+    #def get_queryset(self):
+        #return super().get_queryset().filter(title__contains='Article')
 # Create your views here.
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context)
+        return context
 
 class CreateArticleView(FormView):
     template_name = "articles/create_article.html"
