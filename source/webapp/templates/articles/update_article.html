@@ -7,6 +7,7 @@
 <h1>Update Article</h1>
 
 <form action="" method="post">
-    {% include 'partial/article_form.html' with button_text="Change" %}
+    {% csrf_token %}
+    {% include 'partial/form.html' with button_text="Change" %}
 </form>
 {% endblock %}
