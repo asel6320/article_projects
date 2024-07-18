@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView, FormView, ListView
+from django.views.generic import TemplateView, FormView, ListView, DetailView
 
 from webapp.forms import ArticleForm, SearchForm
 from webapp.models import Article
@@ -56,16 +56,13 @@ class CreateArticleView(FormView):
         article = form.save()
         return redirect("article_detail", pk=article.pk)
 
-class ArticleDetailView(TemplateView):
+class ArticleDetailView(DetailView):
     template_name = "articles/article_detail.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        self.article = get_object_or_404(Article, pk=kwargs.get('pk'))
-        return super().dispatch(request, *args, **kwargs)
+    model = Article
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        context["article"] = self.article
+        context = super().get_context_data(**kwargs)
+        context["comments"] = self.object.comments.order_by('-created_at')
         return context
 
 

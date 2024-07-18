@@ -9,9 +9,9 @@
             <a href="{% url 'articles' %}" class="card-link">На главную</a>
             <br/>
         
-            {% if article.comments.exists %}
+            {% if comments.exists %}
                 <p>Comments</p>
-                {% for comment in article.comments.all %}
+                {% for comment in comments %}
                     <p>{{ comment.text }}</p>
                 {% endfor %}
             {% endif %}
