@@ -3,9 +3,9 @@ from urllib.parse import urlencode
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, FormView, ListView, DetailView
+from django.views.generic import TemplateView, FormView, ListView, DetailView, DeleteView
 
 from webapp.forms import ArticleForm, SearchForm
 from webapp.models import Article
@@ -89,13 +89,9 @@ class UpdateArticleView(FormView):
 
     def form_valid(self, form):
         form.save()
-        return redirect("article_detail", pk=self.article.pk)
+        return redirect("webapp:article_detail", pk=self.article.pk)
 
-def delete_article(request, *args, pk, **kwargs):
-    if request.method == 'GET':
-        article = get_object_or_404(Article, pk=pk)
-        return render(request, 'articles/delete_article.html')
-    else:
-        article = get_object_or_404(Article, pk=pk) #by this function you find the article
-        article.delete()
-        return redirect("articles")
+class DeleteArticleView(DeleteView):
+    template_name = "articles/delete_article.html"
+    model = Article
+    success_url = reverse_lazy("webapp:articles")
