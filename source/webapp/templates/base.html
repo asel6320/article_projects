@@ -37,7 +37,8 @@
                 </li>
             {% else %}
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'accounts:login' %}">Выйти</a>
+                    {% csrf_token %}
+                    <a class="nav-link active" aria-current="page" href="{% url 'accounts:logout' %}">Выйти</a>
                 </li>
             {% endif %}
             </ul>

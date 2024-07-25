@@ -1,26 +1,28 @@
 from urllib.parse import urlencode
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, FormView, ListView, DetailView, DeleteView
+from django.views.generic import TemplateView, FormView, ListView, DetailView, DeleteView, CreateView
 
 from webapp.forms import ArticleForm, SearchForm
 from webapp.models import Article
 
 class ArticleListView(ListView):
-    #queryset = Article.objects.filter(title__contains='Article')
+    # queryset = Article.objects.filter(title__contains="Стат")
     model = Article
     template_name = "articles/index.html"
     ordering = ['-created_at']
-    context_object_name = 'articles'
-    paginate_by = 3
+    context_object_name = "articles"
+    paginate_by = 5
 
-# Create your views here.
+    # paginate_orphans = 2
+
     def dispatch(self, request, *args, **kwargs):
-        print(request.user.is_authenticated, 'is_authenticated')
+        print(request.user.is_authenticated, "is_authenticated")
         self.form = self.get_form()
         self.search_value = self.get_search_value()
         return super().dispatch(request, *args, **kwargs)
@@ -49,9 +51,15 @@ class ArticleListView(ListView):
             context["search_value"] = self.search_value
         return context
 
-class CreateArticleView(FormView):
+
+class CreateArticleView(LoginRequiredMixin, CreateView):
     template_name = "articles/create_article.html"
     form_class = ArticleForm
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return super().dispatch(request, *args, **kwargs)
+        return redirect('accounts:login')
 
     def form_valid(self, form):
         article = form.save()
