@@ -1,12 +1,13 @@
 from urllib.parse import urlencode
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, FormView, ListView, DetailView, DeleteView, CreateView
+from django.views.generic import TemplateView, FormView, ListView, DetailView, DeleteView, CreateView, UpdateView
 
 from webapp.forms import ArticleForm, SearchForm
 from webapp.models import Article
@@ -56,14 +57,9 @@ class CreateArticleView(LoginRequiredMixin, CreateView):
     template_name = "articles/create_article.html"
     form_class = ArticleForm
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return super().dispatch(request, *args, **kwargs)
-        return redirect('accounts:login')
-
     def form_valid(self, form):
-        article = form.save()
-        return redirect("article_detail", pk=article.pk)
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
 class ArticleDetailView(DetailView):
     template_name = "articles/article_detail.html"
@@ -74,33 +70,21 @@ class ArticleDetailView(DetailView):
         context["comments"] = self.object.comments.order_by('-created_at')
         return context
 
-
-class UpdateArticleView(FormView):
+class UpdateArticleView(PermissionRequiredMixin, UpdateView):
     template_name = "articles/update_article.html"
     form_class = ArticleForm
+    model = Article
+    permission_required = "webapp.change_article"
 
-    def dispatch(self, request, *args, **kwargs):
-        self.article = self.get_object()
-        return super().dispatch(request, *args, **kwargs)
+    def has_permission(self):
+        # return self.request.user.groups.filter(name="moderators").exists()
+        return super().has_permission() or self.request.user == self.get_object().author
 
-    def get_object(self):
-        return get_object_or_404(Article, pk=self.kwargs.get("pk"))
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['instance'] = self.article
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['article'] = self.article
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        return redirect("webapp:article_detail", pk=self.article.pk)
-
-class DeleteArticleView(DeleteView):
+class DeleteArticleView(PermissionRequiredMixin, DeleteView):
     template_name = "articles/delete_article.html"
     model = Article
     success_url = reverse_lazy("webapp:articles")
+    permission_required = "webapp.delete_article"
+
+    def has_permission(self):
+        return super().has_permission() or self.request.user == self.get_object().author
