@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
 class BaseModel(models.Model):
@@ -10,9 +11,12 @@ class BaseModel(models.Model):
 # Create your models here.
 class Article(BaseModel): #id is there by default
     title = models.CharField(max_length=50, null=False, blank=False, verbose_name='Title')
-    author = models.CharField(max_length=50, null=False, blank=False, verbose_name='Author', default="Unknown")
     content = models.TextField(max_length=1000, null=False, blank=False, verbose_name='Content')
-    #tags = models.ManyToManyField('webapp.Tag', related_name='articles', verbose_name='Tags', blank=True)
+    author = models.ForeignKey(
+        get_user_model(),
+        related_name='articles',
+        on_delete=models.SET_DEFAULT,
+        default=1)
     tags = models.ManyToManyField(
         "webapp.Tag",
         related_name="articles",
@@ -33,7 +37,11 @@ class Article(BaseModel): #id is there by default
 class Comment(BaseModel):
    article = models.ForeignKey('webapp.Article', related_name='comments', on_delete=models.CASCADE, verbose_name='Статья')
    text = models.TextField(max_length=400, verbose_name='Комментарий')
-   author = models.CharField(max_length=40, null=True, blank=True, default='Аноним', verbose_name='Автор')
+   author = models.ForeignKey(
+       get_user_model(),
+       related_name='comments',
+       on_delete=models.SET_DEFAULT,
+       default=1)
 
 
    def __str__(self):

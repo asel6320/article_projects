@@ -33,9 +33,17 @@
                 {% endblock %}
             {% if not request.user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'accounts:login' %}">Войти</a>
+                    <a class="nav-link active" aria-current="page"
+                       href="{% url 'accounts:login' %}?next={{ request.get_full_path }}">Войти</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"
+                       href="{% url 'accounts:register' %}?next={{ request.get_full_path }}">Регистрация</a>
                 </li>
             {% else %}
+                <li class="nav-item">
+                    <p class="nav-link" >Здравствуйте {{ request.user.username }}</p>
+                </li>
                 <li class="nav-item">
                     {% csrf_token %}
                     <a class="nav-link active" aria-current="page" href="{% url 'accounts:logout' %}">Выйти</a>
